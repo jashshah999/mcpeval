@@ -185,6 +185,29 @@ mcpeval check openapi.yaml
 mcpeval check server.json --simulate --cases tests.yaml
 ```
 
+## pytest Integration
+
+```python
+# test_my_mcp_server.py
+
+def test_schema_quality(assert_mcp_quality):
+    """Fail if schema score drops below 80 or has errors."""
+    assert_mcp_quality("mcp_tools.json", min_score=80)
+
+def test_no_token_bloat(mcp_schema):
+    """Ensure total schema tokens stay reasonable."""
+    assert mcp_schema.total_tokens < 2000
+
+def test_all_tools_documented(mcp_schema):
+    """Every tool must have a description."""
+    for tool in mcp_schema.tools:
+        assert tool.description, f"{tool.name} has no description"
+```
+
+```bash
+pytest --mcpeval-schema mcp_tools.json
+```
+
 ## GitHub Action
 
 ```yaml
@@ -201,6 +224,8 @@ jobs:
       - run: pip install mcpeval
       - run: mcpeval check mcp_tools.json --ci
 ```
+
+Automatically posts a schema report as a PR comment when schema files change (see `.github/workflows/pr-comment.yml`).
 
 ## Schema Diffing (catch regressions)
 
