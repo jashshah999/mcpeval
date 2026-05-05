@@ -202,14 +202,72 @@ jobs:
       - run: mcpeval check mcp_tools.json --ci
 ```
 
+## Schema Diffing (catch regressions)
+
+```bash
+# Compare before/after and block CI on regressions
+mcpeval diff schema_v1.json schema_v2.json --ci
+
+  Schema Diff: schema_v1.json → schema_v2.json
+  Score: 72 → 45 (-27)
+  Tokens: +340
+  - Removed: get_user
+  ~ search: description changed; added params: filter; tokens: +85
+
+  Regressions:
+    ✗ Score dropped: 72 → 45
+    ✗ Removed tools: get_user
+    ✗ 3 new schema issues introduced
+```
+
+### Watch mode (live development)
+
+```bash
+# Re-runs analysis every time you save the file
+mcpeval watch my_server.json
+```
+
+### PR comment reports
+
+```bash
+# Generate markdown for PR comments
+mcpeval report my_server.json -f markdown -o report.md
+
+# Get a badge URL
+mcpeval report my_server.json -f badge
+# → https://img.shields.io/badge/mcpeval-85%2F100%20(B)-brightgreen
+```
+
+### Auto-fix
+
+```bash
+# Fix common issues automatically (renames, adds inferred descriptions)
+mcpeval fix my_server.json
+  → Renamed 'do_search' → 'search'
+  → Renamed 'perform_delete' → 'delete'
+  → Added inferred description to 'delete'
+```
+
+### Connect to live MCP servers
+
+```bash
+# Analyze a running MCP server directly via stdio
+mcpeval connect npx -y @modelcontextprotocol/server-filesystem /tmp
+```
+
 ## CLI Reference
 
 ```
-mcpeval check <spec>     Analyze schema (add --simulate, --suggest, --ci)
-mcpeval tokens <spec>    Show token usage breakdown
-mcpeval improve <spec>   Get AI suggestions (requires API key)
-mcpeval gen <spec>       Generate test cases from schema
-mcpeval init             Create sample mcpeval.json
+mcpeval check <spec>       Analyze schema (add --simulate, --suggest, --ci)
+mcpeval diff <v1> <v2>     Compare versions, detect regressions
+mcpeval fix <spec>         Auto-fix common issues
+mcpeval watch <spec>       Live re-analysis on file changes
+mcpeval report <spec>      Generate markdown/badge reports
+mcpeval tokens <spec>      Show token usage breakdown
+mcpeval improve <spec>     Get AI suggestions (requires API key)
+mcpeval gen <spec>         Generate test cases from schema
+mcpeval connect <cmd...>   Connect to live MCP server via stdio
+mcpeval init               Create sample mcpeval.json
 ```
 
 ## Why Not Just Use the MCP Inspector?
