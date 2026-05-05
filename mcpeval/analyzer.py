@@ -101,7 +101,11 @@ def _check_description(tool: Tool, report: AnalysisReport) -> None:
     first_word = tool.description.strip().split()[0].lower() if tool.description.strip() else ""
     action_verbs = {"get", "fetch", "create", "update", "delete", "search", "list", "send",
                     "retrieve", "find", "add", "remove", "set", "check", "validate", "compute",
-                    "calculate", "generate", "convert", "parse", "extract", "submit", "query"}
+                    "calculate", "generate", "convert", "parse", "extract", "submit", "query",
+                    "read", "write", "move", "copy", "edit", "make", "run", "start", "stop",
+                    "connect", "disconnect", "upload", "download", "sync", "reset", "clear",
+                    "open", "close", "enable", "disable", "install", "uninstall", "deploy",
+                    "recursively", "permanently"}
     if first_word not in action_verbs and not first_word.endswith("s"):
         report.issues.append(Issue(
             tool=tool.name,

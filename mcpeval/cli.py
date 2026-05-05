@@ -134,6 +134,31 @@ def gen(spec_file, output):
 
 
 @main.command()
+@click.argument("command", nargs=-1, required=True)
+@click.option("--timeout", "-t", default=10, help="Timeout in seconds")
+def connect(command, timeout):
+    """Connect to a running MCP server and analyze its tools.
+
+    Example:
+        mcpeval connect npx -y @modelcontextprotocol/server-filesystem /tmp
+    """
+    from .live import connect_stdio
+
+    console.print(f"  Connecting to: {' '.join(command)}")
+    try:
+        spec = connect_stdio(list(command), timeout=timeout)
+        console.print(f"  [green]Connected! Found {len(spec.tools)} tools[/green]")
+        print_header(spec)
+        report = analyze(spec)
+        print_analysis(report)
+        print_token_breakdown(spec)
+        print_summary(report)
+    except RuntimeError as e:
+        console.print(f"  [red]Error: {e}[/red]")
+        sys.exit(1)
+
+
+@main.command()
 def init():
     """Create a sample mcpeval config in the current directory."""
     sample = {
