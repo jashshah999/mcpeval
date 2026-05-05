@@ -4,10 +4,8 @@ from __future__ import annotations
 
 import json
 import subprocess
-import sys
-from pathlib import Path
 
-from .schema import MCPServerSpec, Tool, ToolParam, _extract_params
+from .schema import MCPServerSpec, Tool, _extract_params
 
 
 def connect_stdio(command: list[str], timeout: int = 10) -> MCPServerSpec:

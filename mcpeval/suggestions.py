@@ -6,7 +6,7 @@ import json
 import os
 from dataclasses import dataclass
 
-from .schema import MCPServerSpec, Tool
+from .schema import MCPServerSpec
 
 
 @dataclass

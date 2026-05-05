@@ -134,6 +134,28 @@ def gen(spec_file, output):
 
 
 @main.command()
+@click.argument("spec_file", type=click.Path(exists=True))
+@click.option("--output", "-o", type=click.Path(), help="Output file (default: overwrites input)")
+def fix(spec_file, output):
+    """Auto-fix common schema issues (renames, missing descriptions)."""
+    from .fixer import auto_fix, export_fixed
+
+    spec = load_spec(Path(spec_file))
+    fixed_spec, changes = auto_fix(spec)
+
+    if not changes:
+        console.print("  [green]Nothing to fix![/green]")
+        return
+
+    for change in changes:
+        console.print(f"  [cyan]→[/cyan] {change}")
+
+    out_path = Path(output) if output else Path(spec_file)
+    export_fixed(fixed_spec, out_path)
+    console.print(f"\n  [green]Fixed {len(changes)} issues → {out_path}[/green]")
+
+
+@main.command()
 @click.argument("command", nargs=-1, required=True)
 @click.option("--timeout", "-t", default=10, help="Timeout in seconds")
 def connect(command, timeout):

@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from enum import Enum
 
-from .schema import MCPServerSpec, Tool, ToolParam
+from .schema import MCPServerSpec, Tool
 
 
 class Severity(str, Enum):

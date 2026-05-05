@@ -6,11 +6,10 @@ from rich.console import Console
 from rich.panel import Panel
 from rich.table import Table
 from rich.text import Text
-from rich.columns import Columns
 from rich import box
 
-from .analyzer import AnalysisReport, Issue, Severity
-from .simulator import SimulationReport, SimulationResult
+from .analyzer import AnalysisReport, Severity
+from .simulator import SimulationReport
 from .suggestions import Suggestion
 from .schema import MCPServerSpec
 
