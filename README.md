@@ -2,7 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
-[![Tests](https://img.shields.io/badge/tests-17%20passed-green.svg)]()
+[![Tests](https://img.shields.io/badge/tests-23%20passed-green.svg)]()
 
 **Lint, test, and optimize your MCP tool schemas before shipping.**
 
