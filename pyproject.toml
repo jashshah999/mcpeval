@@ -34,6 +34,9 @@ openai = ["openai>=1.0"]
 anthropic = ["anthropic>=0.30"]
 all = ["google-genai>=1.0", "openai>=1.0", "anthropic>=0.30"]
 
+[project.entry-points.pytest11]
+mcpeval = "mcpeval.pytest_plugin"
+
 [project.scripts]
 mcpeval = "mcpeval.cli:main"
 
