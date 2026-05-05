@@ -180,6 +180,106 @@ def connect(command, timeout):
         sys.exit(1)
 
 
+@main.command(name="diff")
+@click.argument("before", type=click.Path(exists=True))
+@click.argument("after", type=click.Path(exists=True))
+@click.option("--ci", is_flag=True, help="Exit 1 on regressions")
+def diff_cmd(before, after, ci):
+    """Compare two schema versions and detect regressions.
+
+    Example:
+        mcpeval diff schema_v1.json schema_v2.json
+    """
+    from .compare import compare_specs
+
+    result = compare_specs(Path(before), Path(after))
+
+    console.print()
+    console.print(f"  [bold]Schema Diff[/bold]: {before} → {after}")
+    console.print(f"  Score: {result.score_before} → {result.score_after}", end="")
+    delta = result.score_after - result.score_before
+    if delta > 0:
+        console.print(f" [green](+{delta})[/green]")
+    elif delta < 0:
+        console.print(f" [red]({delta})[/red]")
+    else:
+        console.print(" (unchanged)")
+
+    if result.token_delta:
+        sign = "+" if result.token_delta > 0 else ""
+        color = "red" if result.token_delta > 0 else "green"
+        console.print(f"  Tokens: [{color}]{sign}{result.token_delta}[/{color}]")
+
+    if result.added_tools:
+        console.print(f"  [green]+ Added:[/green] {', '.join(result.added_tools)}")
+    if result.removed_tools:
+        console.print(f"  [red]- Removed:[/red] {', '.join(result.removed_tools)}")
+
+    for td in result.changed_tools:
+        console.print(f"  [yellow]~ {td.name}:[/yellow] {'; '.join(td.changes)}")
+
+    console.print()
+    if result.regressions:
+        console.print("  [bold red]Regressions:[/bold red]")
+        for r in result.regressions:
+            console.print(f"    [red]✗[/red] {r}")
+    if result.improvements:
+        console.print("  [bold green]Improvements:[/bold green]")
+        for imp in result.improvements:
+            console.print(f"    [green]✓[/green] {imp}")
+
+    if not result.regressions and not result.improvements:
+        console.print("  [dim]No significant changes.[/dim]")
+
+    console.print()
+    if ci and result.has_regressions:
+        sys.exit(1)
+
+
+@main.command(name="watch")
+@click.argument("spec_file", type=click.Path(exists=True))
+def watch_cmd(spec_file):
+    """Watch a schema file and re-run analysis on changes.
+
+    Great for development — edit your schema and see the score update live.
+    """
+    from .watcher import watch_file
+    watch_file(Path(spec_file))
+
+
+@main.command()
+@click.argument("spec_file", type=click.Path(exists=True))
+@click.option("--format", "-f", "fmt", default="markdown", type=click.Choice(["markdown", "json", "badge"]))
+@click.option("--output", "-o", type=click.Path())
+def report(spec_file, fmt, output):
+    """Generate a report (markdown for PR comments, badge URL, or JSON)."""
+    from .report import generate_markdown, generate_badge_url
+
+    spec = load_spec(Path(spec_file))
+    report_data = analyze(spec)
+
+    if fmt == "markdown":
+        content = generate_markdown(spec, report_data)
+    elif fmt == "badge":
+        content = generate_badge_url(report_data.score)
+    else:
+        import json as json_mod
+        content = json_mod.dumps({
+            "score": report_data.score,
+            "grade": "A" if report_data.score >= 90 else "B" if report_data.score >= 80 else "C" if report_data.score >= 60 else "F",
+            "tools": len(spec.tools),
+            "tokens": spec.total_tokens,
+            "errors": report_data.error_count,
+            "warnings": report_data.warning_count,
+        }, indent=2)
+
+    if output:
+        Path(output).write_text(content)
+        console.print(f"  [green]Report saved to {output}[/green]")
+    else:
+        console.print(content)
+
+
 @main.command()
 def init():
     """Create a sample mcpeval config in the current directory."""
