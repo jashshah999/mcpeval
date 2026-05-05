@@ -1,0 +1,112 @@
+{
+  "name": "acme-crm",
+  "tools": [
+    {
+      "name": "do_search",
+      "description": "search",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          }
+        },
+        "required": ["data"]
+      }
+    },
+    {
+      "name": "get",
+      "description": "Gets a thing from the database",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          }
+        },
+        "required": ["id"]
+      }
+    },
+    {
+      "name": "update_customer_information_record_in_database",
+      "description": "This function is used to update the customer information record that is stored in our main PostgreSQL database. It takes the customer ID and the fields you want to update and then writes them to the database and returns the updated record.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "customer_id": {
+            "type": "string",
+            "description": "The customer ID"
+          },
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string"
+          },
+          "address": {
+            "type": "string"
+          },
+          "city": {
+            "type": "string"
+          },
+          "state": {
+            "type": "string"
+          },
+          "zip": {
+            "type": "string"
+          },
+          "country": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "tier": {
+            "type": "string"
+          },
+          "notes": {
+            "type": "string"
+          }
+        },
+        "required": ["customer_id"]
+      }
+    },
+    {
+      "name": "search_customers",
+      "description": "Search for customers in the database by name, email, or other fields",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search query"
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Max results"
+          }
+        },
+        "required": ["query"]
+      }
+    },
+    {
+      "name": "perform_delete",
+      "description": "",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "string"
+          }
+        },
+        "required": ["value"]
+      }
+    }
+  ]
+}

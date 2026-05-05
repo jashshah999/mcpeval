@@ -1,0 +1,78 @@
+{
+  "name": "acme-crm",
+  "tools": [
+    {
+      "name": "search_customers",
+      "description": "Search for customers by name, email, phone, or company. Returns a list of matching customer records with basic info.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search term to match against customer name, email, phone, or company"
+          },
+          "status_filter": {
+            "type": "string",
+            "description": "Filter by customer status",
+            "enum": ["active", "inactive", "churned", "trial"]
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Maximum results to return (default: 20, max: 100)"
+          }
+        },
+        "required": ["query"]
+      }
+    },
+    {
+      "name": "get_customer",
+      "description": "Retrieve full details for a specific customer by their ID. Use this after search_customers to get complete information.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "customer_id": {
+            "type": "string",
+            "description": "Unique customer identifier (format: cust_xxxx)"
+          }
+        },
+        "required": ["customer_id"]
+      }
+    },
+    {
+      "name": "update_customer",
+      "description": "Update one or more fields on a customer record. Only pass the fields you want to change.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "customer_id": {
+            "type": "string",
+            "description": "Unique customer identifier (format: cust_xxxx)"
+          },
+          "updates": {
+            "type": "object",
+            "description": "Key-value pairs of fields to update (e.g., {\"email\": \"new@example.com\", \"status\": \"active\"})"
+          }
+        },
+        "required": ["customer_id", "updates"]
+      }
+    },
+    {
+      "name": "delete_customer",
+      "description": "Permanently delete a customer record. This action cannot be undone. Requires customer_id confirmation.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "customer_id": {
+            "type": "string",
+            "description": "Unique customer identifier (format: cust_xxxx)"
+          },
+          "confirm": {
+            "type": "boolean",
+            "description": "Must be true to confirm deletion"
+          }
+        },
+        "required": ["customer_id", "confirm"]
+      }
+    }
+  ]
+}

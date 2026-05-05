@@ -1,0 +1,42 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mcpeval"
+version = "0.1.0"
+description = "Test your MCP servers before shipping. Simulate LLM tool calls, catch schema bugs, measure token waste."
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.10"
+authors = [
+    {name = "Jash Shah", email = "jashshah999@gmail.com"},
+]
+keywords = ["mcp", "testing", "llm", "tools", "ai-agents", "model-context-protocol"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Topic :: Software Development :: Testing",
+]
+dependencies = [
+    "click>=8.0",
+    "rich>=13.0",
+    "httpx>=0.25.0",
+    "pydantic>=2.0",
+    "pyyaml>=6.0",
+]
+
+[project.optional-dependencies]
+gemini = ["google-genai>=1.0"]
+openai = ["openai>=1.0"]
+anthropic = ["anthropic>=0.30"]
+all = ["google-genai>=1.0", "openai>=1.0", "anthropic>=0.30"]
+
+[project.scripts]
+mcpeval = "mcpeval.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/jashshah999/mcpeval"
+Issues = "https://github.com/jashshah999/mcpeval/issues"
